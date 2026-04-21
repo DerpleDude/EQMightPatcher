@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace EQMightPatcher;
 
@@ -15,6 +16,15 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<string> _logEntries = [];
     private CancellationTokenSource? _cts;
     private bool _patchComplete = false;
+    private DispatcherTimer? _fightTimer;
+    private int _fightFrame = 0;
+    private static readonly string[] FightFrames =
+    [
+        "🧍⚔️🧍",
+        "🧍 ⚔️🧍",
+        "🧍⚔️ 🧍",
+        "🧍 ⚔️ 🧍",
+    ];
 
     public MainWindow()
     {
@@ -105,6 +115,15 @@ public partial class MainWindow : Window
         StatusText.Text = "";
         _logEntries.Clear();
 
+        _fightFrame = 0;
+        _fightTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+        _fightTimer.Tick += (_, _) =>
+        {
+            ActionButton.Content = FightFrames[_fightFrame % FightFrames.Length];
+            _fightFrame++;
+        };
+        _fightTimer.Start();
+
         var progress = new Progress<(double Percent, string Status)>(report =>
         {
             ProgressBar.Value = report.Percent;
@@ -131,6 +150,8 @@ public partial class MainWindow : Window
         }
         finally
         {
+            _fightTimer?.Stop();
+            _fightTimer = null;
             await RefreshAsync();
         }
     }
