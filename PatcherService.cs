@@ -136,21 +136,32 @@ public class PatcherService
         if (!Directory.Exists(repoPath) || !Repository.IsValid(repoPath))
             return (true, "No patch notes available — run Update Now! first.");
 
-        using var repo = new Repository(repoPath);
-        var remote = repo.Network.Remotes["origin"];
-        Commands.Fetch(repo, remote.Name, remote.FetchRefSpecs.Select(r => r.Specification), null, null);
+        string localSha;
+        string remoteSha;
+        string commitLog;
 
-        var remoteBranch = repo.Branches["origin/main"] ?? repo.Branches["origin/master"];
-        if (remoteBranch == null) return (false, "No commits found.");
+        using (var repo = new Repository(repoPath))
+        {
+            localSha = repo.Head.Tip?.Sha ?? "";
+            var remote = repo.Network.Remotes["origin"];
+            Commands.Fetch(repo, remote.Name, remote.FetchRefSpecs.Select(r => r.Specification), null, null);
+        }
 
-        var tip = remoteBranch.Tip;
-        var date = tip.Author.When.LocalDateTime.ToString("yyyy-MM-dd");
-        var log = $"[{date}] {tip.Author.Name}\n{tip.Message.TrimEnd()}";
+        // re-open after fetch so remote tracking refs are refreshed
+        using (var repo = new Repository(repoPath))
+        {
+            var remoteBranch = repo.Branches["origin/main"] ?? repo.Branches["origin/master"];
+            if (remoteBranch == null) return (false, "No commits found.");
+            var tip = remoteBranch.Tip;
+            remoteSha = tip.Sha;
+            var date = tip.Author.When.LocalDateTime.ToString("yyyy-MM-dd");
+            commitLog = $"[{date}] {tip.Author.Name}\n{tip.Message.TrimEnd()}";
+        }
 
-        var gitDiffers = repo.Head.Tip?.Sha != tip.Sha;
+        var hasNew = localSha != remoteSha;
         var filesDiffer = AnyFileDiffers(repoPath, eqDirectory);
 
-        return (gitDiffers || filesDiffer, log);
+        return (hasNew || filesDiffer, commitLog);
     }
 
     private bool AnyFileDiffers(string repoPath, string eqDirectory)
