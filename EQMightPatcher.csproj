@@ -10,6 +10,7 @@
     <AssemblyName>EQMightPatcher</AssemblyName>
     <RootNamespace>EQMightPatcher</RootNamespace>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <ApplicationIcon>assets\eqm-icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +20,7 @@
   <ItemGroup>
     <Resource Include="assets\logo.png" />
     <Resource Include="assets\eqm-icon.png" />
+    <None Include="assets\eqm-icon.ico" />
     <Resource Include="assets\derpdog.png" />
   </ItemGroup>
 

@@ -33,7 +33,8 @@ jobs:
           -o publish
 
       - name: Zip release
-        run: Compress-Archive -Path publish\* -DestinationPath EQMightPatcher-${{ github.ref_name }}.zip
+        run: |
+          Get-ChildItem publish -Exclude *.pdb | Compress-Archive -DestinationPath EQMightPatcher-${{ github.ref_name }}.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
