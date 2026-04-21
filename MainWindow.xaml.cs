@@ -203,14 +203,29 @@ public partial class MainWindow : Window
                 return;
             }
 
-            AppendLog($"  Launching {Path.GetFileName(exe)}");
-            StatusText.Text = "Launching 4GB Patch...";
-            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            var eqExe = Path.Combine(eqDir, "eqgame.exe");
+            AppendLog($"  Launching {Path.GetFileName(exe)} with {eqExe}");
+            StatusText.Text = "Running 4GB Patch...";
+            var proc = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
                 FileName = exe,
+                Arguments = $"\"{eqExe}\"",
                 WorkingDirectory = patchDir,
                 UseShellExecute = true,
             });
+            if (proc != null)
+            {
+                await proc.WaitForExitAsync();
+                if (proc.ExitCode == 0)
+                {
+                    AppendLog("  4GB patch applied successfully.");
+                    System.Windows.MessageBox.Show("Patch Successful!", "EQ Might Patcher", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    AppendLog($"  [warn] process exited with code {proc.ExitCode}");
+                }
+            }
         }
         catch (Exception ex)
         {
