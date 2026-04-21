@@ -9,6 +9,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>EQMightPatcher</AssemblyName>
     <RootNamespace>EQMightPatcher</RootNamespace>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
