@@ -148,7 +148,7 @@ public class PatcherService
         var message = commit.GetProperty("message").GetString()?.TrimEnd() ?? "";
         if (DateTimeOffset.TryParse(dateStr, out var dt))
             dateStr = dt.LocalDateTime.ToString("yyyy-MM-dd");
-        return (sha, $"[{dateStr}]\n{message}");
+        return (sha, $"[{dateStr}]\n{message}");  // removed author
     }
 
     public (bool HasNew, string CommitLog) FetchAndCheck(string eqDirectory)
