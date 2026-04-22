@@ -42,3 +42,4 @@ jobs:
           files: EQMightPatcher.zip
           name: EQ Might Patcher ${{ github.ref_name }}
           generate_release_notes: true
+          make_latest: true
