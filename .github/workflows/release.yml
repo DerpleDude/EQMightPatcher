@@ -51,7 +51,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            EQMightPatcher-${{ github.ref_name }}-small.zip
-            EQMightPatcher-${{ github.ref_name }}-full.zip
+            EQMightPatcher-${{ github.ref_name }}-no_framework.zip
+            EQMightPatcher-${{ github.ref_name }}.zip
           name: EQ Might Patcher ${{ github.ref_name }}
           generate_release_notes: true
