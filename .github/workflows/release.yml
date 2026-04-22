@@ -34,11 +34,11 @@ jobs:
 
       - name: Zip release
         run: |
-          Get-ChildItem publish -Exclude *.pdb | Compress-Archive -DestinationPath EQMightPatcher-${{ github.ref_name }}.zip
+          Get-ChildItem publish -Exclude *.pdb | Compress-Archive -DestinationPath EQMightPatcher.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: EQMightPatcher-${{ github.ref_name }}.zip
+          files: EQMightPatcher.zip
           name: EQ Might Patcher ${{ github.ref_name }}
           generate_release_notes: true
