@@ -59,8 +59,8 @@ public partial class MainWindow : Window
         var (hasNew, log) = await Task.Run(() => _service.FetchAndCheck(eqDir));
 
         PatchNotesText.Text = log;
-        ActionButton.Content = hasNew ? "Update Now!" : "Up to date!";
-        ActionButton.IsEnabled = hasNew;
+        ActionButton.Content = hasNew ? "Update Now!" : "Recheck for Updates";
+        ActionButton.IsEnabled = true;
         if (!hasNew) _patchComplete = true;
         PlaceholderButton1.IsEnabled = _patchComplete && Directory.Exists(_settings.EQDirectory);
     }
