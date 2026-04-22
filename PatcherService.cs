@@ -6,7 +6,7 @@ namespace EQMightPatcher;
 
 public class PatcherService
 {
-    private const string RepoUrl = "https://github.com/DerpleDude/EQMightPatchFiles.git";
+    private const string RepoUrl = "https://github.com/EQMight/EQMightPatchFiles.git";
 
     // repo folder names whose contents are copied directly into eqDirectory
     private static readonly string[][] FoldersToCopy =
@@ -130,7 +130,7 @@ public class PatcherService
         }, ct);
     }
 
-    private const string ApiUrl = "https://api.github.com/repos/DerpleDude/EQMightPatchFiles/commits/HEAD";
+    private const string ApiUrl = "https://api.github.com/repos/EQMight/EQMightPatchFiles/commits/HEAD";
 
     private static (string Sha, string CommitLog) FetchLatestFromApi()
     {
@@ -183,7 +183,7 @@ public class PatcherService
     {
         foreach (var folderParts in FoldersToCopy)
         {
-            var srcRoot = Path.Combine([repoPath, ..folderParts]);
+            var srcRoot = Path.Combine([repoPath, .. folderParts]);
             if (!Directory.Exists(srcRoot)) return true;
             foreach (var srcFile in Directory.EnumerateFiles(srcRoot, "*", SearchOption.AllDirectories))
             {

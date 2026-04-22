@@ -21,7 +21,17 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Publish
+      - name: Publish (framework-dependent, small)
+        run: >
+          dotnet publish EQMightPatcher.csproj
+          -c Release
+          -r win-x64
+          --self-contained false
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -o publish-small
+
+      - name: Publish (self-contained, no install needed)
         run: >
           dotnet publish EQMightPatcher.csproj
           -c Release
@@ -30,15 +40,18 @@ jobs:
           -p:PublishSingleFile=true
           -p:IncludeNativeLibrariesForSelfExtract=true
           -p:PublishReadyToRun=true
-          -o publish
+          -o publish-full
 
-      - name: Zip release
+      - name: Zip releases
         run: |
-          Get-ChildItem publish -Exclude *.pdb | Compress-Archive -DestinationPath EQMightPatcher-${{ github.ref_name }}.zip
+          Get-ChildItem publish-small -Exclude *.pdb | Compress-Archive -DestinationPath EQMightPatcher-${{ github.ref_name }}-small.zip
+          Get-ChildItem publish-full  -Exclude *.pdb | Compress-Archive -DestinationPath EQMightPatcher-${{ github.ref_name }}-full.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: EQMightPatcher-${{ github.ref_name }}.zip
+          files: |
+            EQMightPatcher-${{ github.ref_name }}-small.zip
+            EQMightPatcher-${{ github.ref_name }}-full.zip
           name: EQ Might Patcher ${{ github.ref_name }}
           generate_release_notes: true
