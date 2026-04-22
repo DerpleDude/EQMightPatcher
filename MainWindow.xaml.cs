@@ -270,7 +270,7 @@ public partial class MainWindow : Window
     {
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
         {
-            FileName = "https://www.redguides.com/community/threads/aquietones-guide-to-emu-stability.91839/",
+            FileName = "https://www.eqmight.com/setup",
             UseShellExecute = true,
         });
     }
