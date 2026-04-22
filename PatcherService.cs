@@ -130,33 +130,48 @@ public class PatcherService
         }, ct);
     }
 
+    private const string ApiUrl = "https://api.github.com/repos/DerpleDude/EQMightPatchFiles/commits/HEAD";
+
+    private static (string Sha, string CommitLog) FetchLatestFromApi()
+    {
+        using var http = new System.Net.Http.HttpClient();
+        http.DefaultRequestHeaders.Add("User-Agent", "EQMightPatcher");
+        http.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
+        var json = http.GetStringAsync(ApiUrl).GetAwaiter().GetResult();
+        var doc = System.Text.Json.JsonDocument.Parse(json);
+        var root = doc.RootElement;
+        var sha = root.GetProperty("sha").GetString() ?? "";
+        var commit = root.GetProperty("commit");
+        var author = commit.GetProperty("author");
+        var name = author.GetProperty("name").GetString() ?? "";
+        var dateStr = author.GetProperty("date").GetString() ?? "";
+        var message = commit.GetProperty("message").GetString()?.TrimEnd() ?? "";
+        if (DateTimeOffset.TryParse(dateStr, out var dt))
+            dateStr = dt.LocalDateTime.ToString("yyyy-MM-dd");
+        return (sha, $"[{dateStr}] {name}\n{message}");
+    }
+
     public (bool HasNew, string CommitLog) FetchAndCheck(string eqDirectory)
     {
         var repoPath = RepoPath(eqDirectory);
-        if (!Directory.Exists(repoPath) || !Repository.IsValid(repoPath))
-            return (true, "No patch notes available — run Update Now! first.");
 
-        string localSha;
         string remoteSha;
         string commitLog;
-
-        using (var repo = new Repository(repoPath))
+        try
         {
+            (remoteSha, commitLog) = FetchLatestFromApi();
+        }
+        catch
+        {
+            return (true, "Could not reach patch repository.");
+        }
+
+        if (!Directory.Exists(repoPath) || !Repository.IsValid(repoPath))
+            return (true, commitLog);
+
+        string localSha;
+        using (var repo = new Repository(repoPath))
             localSha = repo.Head.Tip?.Sha ?? "";
-            var remote = repo.Network.Remotes["origin"];
-            Commands.Fetch(repo, remote.Name, remote.FetchRefSpecs.Select(r => r.Specification), null, null);
-        }
-
-        // re-open after fetch so remote tracking refs are refreshed
-        using (var repo = new Repository(repoPath))
-        {
-            var remoteBranch = repo.Branches["origin/main"] ?? repo.Branches["origin/master"];
-            if (remoteBranch == null) return (false, "No commits found.");
-            var tip = remoteBranch.Tip;
-            remoteSha = tip.Sha;
-            var date = tip.Author.When.LocalDateTime.ToString("yyyy-MM-dd");
-            commitLog = $"[{date}] {tip.Author.Name}\n{tip.Message.TrimEnd()}";
-        }
 
         var hasNew = localSha != remoteSha;
         var filesDiffer = AnyFileDiffers(repoPath, eqDirectory);

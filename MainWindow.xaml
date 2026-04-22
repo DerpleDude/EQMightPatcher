@@ -11,10 +11,19 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
+        <!-- Palette derived from logo:
+             bg dark:    #1a1510
+             bg mid:     #2a2018
+             accent:     #f0b45a  (logo amber)
+             accent dim: #c87820  (logo burnt orange)
+             border:     #c87820
+             text:       #f0c890  (logo gold)
+             text dim:   #a07840  -->
+
         <Style x:Key="PatcherButton" TargetType="Button">
-            <Setter Property="Background" Value="#CC1a1a2e"/>
-            <Setter Property="Foreground" Value="#FFe0c97f"/>
-            <Setter Property="BorderBrush" Value="#FF8a6a1e"/>
+            <Setter Property="Background" Value="#CC2a2018"/>
+            <Setter Property="Foreground" Value="#FFf0c890"/>
+            <Setter Property="BorderBrush" Value="#FFc87820"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12,6"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
@@ -32,13 +41,13 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#CC2a2a4e"/>
+                                <Setter Property="Background" Value="#CC3a3020"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#CC0a0a1e"/>
+                                <Setter Property="Background" Value="#CC1a1008"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Opacity" Value="0.4"/>
+                                <Setter Property="Opacity" Value="0.35"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -47,15 +56,15 @@
         </Style>
 
         <Style x:Key="ConfigTextBox" TargetType="TextBox">
-            <Setter Property="Background" Value="#99000000"/>
-            <Setter Property="Foreground" Value="#FFe0c97f"/>
-            <Setter Property="BorderBrush" Value="#FF8a6a1e"/>
+            <Setter Property="Background" Value="#99100c08"/>
+            <Setter Property="Foreground" Value="#FFf0c890"/>
+            <Setter Property="BorderBrush" Value="#FFc87820"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="4,3"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="CaretBrush" Value="#FFe0c97f"/>
-            <Setter Property="SelectionBrush" Value="#FF8a6a1e"/>
+            <Setter Property="CaretBrush" Value="#FFf0b45a"/>
+            <Setter Property="SelectionBrush" Value="#FFc87820"/>
         </Style>
     </Window.Resources>
 
@@ -66,11 +75,11 @@
         </Border.Effect>
         <Border CornerRadius="8" ClipToBounds="True">
             <Grid>
-                <Rectangle Fill="#EE0d0d1a"/>
+                <Rectangle Fill="#F01a1510"/>
 
                 <DockPanel LastChildFill="True">
                     <!-- Title bar -->
-                    <Border DockPanel.Dock="Top" Background="#DD0a0a14" Height="36"
+                    <Border DockPanel.Dock="Top" Background="#DD120e0a" Height="36"
                             MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
                         <Button Content="✕" Width="36" Height="36" HorizontalAlignment="Right"
                                 Style="{StaticResource PatcherButton}"
@@ -80,7 +89,7 @@
 
                     <!-- Logo banner -->
                     <Border DockPanel.Dock="Top" Background="#CC000000"
-                            BorderBrush="#FF8a6a1e" BorderThickness="0,0,0,1">
+                            BorderBrush="#FFc87820" BorderThickness="0,0,0,1">
                         <Image Source="assets/logo.png" Stretch="Uniform" MaxHeight="110"
                                RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Border>
@@ -93,7 +102,7 @@
                             <Image Source="assets/derpdog.png" Width="28" Height="28"
                                    VerticalAlignment="Center" Margin="0,0,5,0"
                                    RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <TextBlock Text="github.com/DerpleDude" Foreground="#FF9a8a60"
+                            <TextBlock Text="github.com/DerpleDude" Foreground="#FFa07840"
                                        FontFamily="Segoe UI" FontSize="10"
                                        VerticalAlignment="Center" TextDecorations="Underline"/>
                         </StackPanel>
@@ -106,7 +115,7 @@
                         <StackPanel DockPanel.Dock="Top">
 
                             <!-- EQ Directory -->
-                            <TextBlock Text="EverQuest Directory" Foreground="#FFc0a050"
+                            <TextBlock Text="EverQuest Directory" Foreground="#FFf0b45a"
                                        FontFamily="Segoe UI" FontSize="11" Margin="0,0,0,4"/>
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -122,21 +131,21 @@
                                         Click="BrowseButton_Click"/>
                             </Grid>
 
-                            <!-- Patch Notes (below EQ dir) -->
-                            <TextBlock Text="Patch Notes" Foreground="#FFc0a050"
+                            <!-- Patch Notes -->
+                            <TextBlock Text="Patch Notes" Foreground="#FFf0b45a"
                                        FontFamily="Segoe UI Semibold" FontSize="11" Margin="0,10,0,4"/>
-                            <Border Height="100" Background="#88000000" BorderBrush="#FF8a6a1e"
+                            <Border Height="100" Background="#881a1208" BorderBrush="#FFc87820"
                                     BorderThickness="1" CornerRadius="3" Margin="0,0,0,10">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto"
                                               HorizontalScrollBarVisibility="Disabled" Padding="8,6">
                                     <TextBlock x:Name="PatchNotesText"
-                                               Foreground="#FFd0c090" FontFamily="Consolas" FontSize="11"
+                                               Foreground="#FFf0c890" FontFamily="Consolas" FontSize="11"
                                                TextWrapping="Wrap" LineHeight="18"
                                                Text="No patch notes available."/>
                                 </ScrollViewer>
                             </Border>
 
-                            <Separator Background="#44e0c97f" Margin="0,0,0,12"/>
+                            <Separator Background="#44f0b45a" Margin="0,0,0,12"/>
 
                             <!-- Action button + progress -->
                             <Button x:Name="ActionButton" Content="Check for Updates"
@@ -145,15 +154,15 @@
                                     Click="ActionButton_Click"/>
                             <ProgressBar x:Name="ProgressBar" Height="8" Margin="0,10,0,0"
                                          Minimum="0" Maximum="1" Value="0"
-                                         Background="#44000000" Foreground="#FFe0c97f"
-                                         BorderBrush="#FF8a6a1e" BorderThickness="1"/>
-                            <TextBlock x:Name="StatusText" Foreground="#FF9a8a60"
+                                         Background="#441a1208" Foreground="#FFf0b45a"
+                                         BorderBrush="#FFc87820" BorderThickness="1"/>
+                            <TextBlock x:Name="StatusText" Foreground="#FFa07840"
                                        FontFamily="Segoe UI" FontSize="11" Margin="0,4,0,10"
                                        Text="" TextTrimming="CharacterEllipsis"/>
 
-                            <Separator Background="#44e0c97f" Margin="0,0,0,12"/>
+                            <Separator Background="#44f0b45a" Margin="0,0,0,12"/>
 
-                            <!-- 3 placeholder buttons -->
+                            <!-- 3 buttons -->
                             <Grid Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
@@ -174,12 +183,12 @@
                             </Grid>
 
                             <!-- Patch Status label -->
-                            <TextBlock Text="Patch Status" Foreground="#FFc0a050"
+                            <TextBlock Text="Patch Status" Foreground="#FFf0b45a"
                                        FontFamily="Segoe UI Semibold" FontSize="11" Margin="0,0,0,4"/>
                         </StackPanel>
 
-                        <!-- Download log (fills remaining space) -->
-                        <Border Background="#88000000" BorderBrush="#FF8a6a1e"
+                        <!-- Patch status log (fills remaining space) -->
+                        <Border Background="#881a1208" BorderBrush="#FFc87820"
                                 BorderThickness="1" CornerRadius="3">
                             <ScrollViewer x:Name="LogScroller"
                                           VerticalScrollBarVisibility="Auto"
@@ -188,7 +197,7 @@
                                 <ItemsControl x:Name="LogItems">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding}" Foreground="#FFd0c090"
+                                            <TextBlock Text="{Binding}" Foreground="#FFf0c890"
                                                        FontFamily="Consolas" FontSize="11"
                                                        TextWrapping="Wrap" Margin="0,1"/>
                                         </DataTemplate>

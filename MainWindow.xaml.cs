@@ -20,10 +20,18 @@ public partial class MainWindow : Window
     private int _fightFrame = 0;
     private static readonly string[] FightFrames =
     [
-        "🧍⚔️🧍",
-        "🧍 ⚔️🧍",
-        "🧍⚔️ 🧍",
-        "🧍 ⚔️ 🧍",
+        "🤺      🧍",
+        "🤺    🧍",
+        "🤺  ⚔️🧍",
+        "🤺⚔️🧍",
+        "🧍💥🤺",
+        "🧍💥🤺",
+        "🧍    🤺",
+        "🧍  ⚔️🤺",
+        "🧍⚔️🤺",
+        "🤺💥🧍",
+        "🤺💥🧍",
+        "🤺    🧍",
     ];
 
     public MainWindow()
@@ -116,7 +124,7 @@ public partial class MainWindow : Window
         _logEntries.Clear();
 
         _fightFrame = 0;
-        _fightTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+        _fightTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(180) };
         _fightTimer.Tick += (_, _) =>
         {
             ActionButton.Content = FightFrames[_fightFrame % FightFrames.Length];
