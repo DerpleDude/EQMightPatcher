@@ -40,6 +40,8 @@ public partial class MainWindow : Window
         _settings = PatcherSettings.Load();
         EQDirTextBox.Text = _settings.EQDirectory;
         LogItems.ItemsSource = _logEntries;
+        var ver = System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version;
+        VersionText.Text = ver is { Major: > 0 } ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "";
         UpdateButtonState();
         _ = RefreshAsync();
     }

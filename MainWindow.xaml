@@ -94,19 +94,23 @@
                                RenderOptions.BitmapScalingMode="HighQuality"/>
                     </Border>
 
-                    <!-- Derpdog credit link (bottom-left) -->
-                    <Border DockPanel.Dock="Bottom" HorizontalAlignment="Left"
-                            Background="Transparent" Cursor="Hand" Margin="8,0,0,6"
-                            MouseLeftButtonUp="DerpdogLink_Click">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Image Source="assets/derpdog.png" Width="28" Height="28"
-                                   VerticalAlignment="Center" Margin="0,0,5,0"
-                                   RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <TextBlock Text="github.com/DerpleDude" Foreground="#FFa07840"
-                                       FontFamily="Segoe UI" FontSize="10"
-                                       VerticalAlignment="Center" TextDecorations="Underline"/>
-                        </StackPanel>
-                    </Border>
+                    <!-- Bottom bar: derpdog left, version right -->
+                    <Grid DockPanel.Dock="Bottom" Margin="8,0,8,6">
+                        <Border HorizontalAlignment="Left" Background="Transparent" Cursor="Hand"
+                                MouseLeftButtonUp="DerpdogLink_Click">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Source="assets/derpdog.png" Width="28" Height="28"
+                                       VerticalAlignment="Center" Margin="0,0,5,0"
+                                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock Text="github.com/DerpleDude" Foreground="#FFa07840"
+                                           FontFamily="Segoe UI" FontSize="10"
+                                           VerticalAlignment="Center" TextDecorations="Underline"/>
+                            </StackPanel>
+                        </Border>
+                        <TextBlock x:Name="VersionText" HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   Foreground="#FF604830" FontFamily="Segoe UI" FontSize="10"/>
+                    </Grid>
 
                     <!-- Content -->
                     <DockPanel Margin="20,14,20,14" LastChildFill="True">
