@@ -61,7 +61,7 @@ public partial class MainWindow : Window
         PatchNotesText.Text = log;
         ActionButton.Content = hasNew ? "Update Now!" : "Recheck for Updates";
         ActionButton.IsEnabled = true;
-        if (!hasNew) _patchComplete = true;
+        _patchComplete = !hasNew;
         PlaceholderButton1.IsEnabled = _patchComplete && Directory.Exists(_settings.EQDirectory);
     }
 
