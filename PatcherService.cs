@@ -57,18 +57,19 @@ public class PatcherService
                 var refSpecs = remote.FetchRefSpecs.Select(r => r.Specification);
                 Commands.Fetch(repo, remote.Name, refSpecs, null, null);
 
-                var branch = repo.Branches["origin/main"] ?? repo.Branches["origin/master"];
-                if (branch != null)
+                var remoteBranch = repo.Branches["origin/main"] ?? repo.Branches["origin/master"];
+                if (remoteBranch != null)
                 {
-                    if (repo.Head.Tip?.Sha != branch.Tip.Sha)
+                    var branchName = remoteBranch.FriendlyName.Replace("origin/", "");
+                    var localBranch = repo.Branches[branchName];
+                    if (localBranch == null)
                     {
-                        repo.Reset(ResetMode.Hard, branch.Tip);
-                        Report(0.65, "Repository updated.");
+                        localBranch = repo.CreateBranch(branchName, remoteBranch.Tip);
+                        repo.Branches.Update(localBranch, b => b.TrackedBranch = remoteBranch.CanonicalName);
                     }
-                    else
-                    {
-                        Report(0.65, "Repository already up to date. Checking files...");
-                    }
+                    Commands.Checkout(repo, localBranch);
+                    repo.Reset(ResetMode.Hard, remoteBranch.Tip);
+                    Report(0.65, localBranch.Tip.Sha != remoteBranch.Tip.Sha ? "Repository updated." : "Repository already up to date. Checking files...");
                 }
             }
 
@@ -171,7 +172,10 @@ public class PatcherService
 
         string localSha;
         using (var repo = new Repository(repoPath))
-            localSha = repo.Head.Tip?.Sha ?? "";
+        {
+            var branch = repo.Branches["origin/main"] ?? repo.Branches["origin/master"];
+            localSha = branch?.Tip?.Sha ?? repo.Head.Tip?.Sha ?? "";
+        }
 
         var hasNew = localSha != remoteSha;
         var filesDiffer = AnyFileDiffers(repoPath, eqDirectory);
@@ -184,7 +188,7 @@ public class PatcherService
         foreach (var folderParts in FoldersToCopy)
         {
             var srcRoot = Path.Combine([repoPath, .. folderParts]);
-            if (!Directory.Exists(srcRoot)) return true;
+            if (!Directory.Exists(srcRoot)) continue;
             foreach (var srcFile in Directory.EnumerateFiles(srcRoot, "*", SearchOption.AllDirectories))
             {
                 var dest = Path.Combine(eqDirectory, Path.GetRelativePath(srcRoot, srcFile));
