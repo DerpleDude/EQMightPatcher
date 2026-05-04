@@ -201,7 +201,7 @@
                                 <ItemsControl x:Name="LogItems">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding}" Foreground="#FFf0c890"
+                                            <TextBlock Text="{Binding Text}" Foreground="{Binding Color}"
                                                        FontFamily="Consolas" FontSize="11"
                                                        TextWrapping="Wrap" Margin="0,1"/>
                                         </DataTemplate>

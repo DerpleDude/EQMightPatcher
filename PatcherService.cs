@@ -105,24 +105,21 @@ public class PatcherService
                 if (File.Exists(dest) && Md5Equal(src, dest))
                 {
                     progress.Report((pct, $"Checking files..."));
-                    log.Report($"  [skip]   {name}");
                     continue;
                 }
 
-                var label = File.Exists(dest) ? "[update]" : "[new]   ";
+                var label = File.Exists(dest) ? "[update]" : "[new]";
                 progress.Report((pct, $"Copying {name}..."));
-                log.Report($"  {label} {name}");
-                log.Report($"      {src} -> {dest}");
                 try
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
                     File.Copy(src, dest, overwrite: true);
-                    log.Report($"           OK");
+                    log.Report($"OK  {label} {Path.GetFileName(src)} -> {dest}");
                     copied++;
                 }
                 catch (Exception ex)
                 {
-                    log.Report($"           ERROR: {ex.Message}");
+                    log.Report($"ERROR  {label} {Path.GetFileName(src)} -> {dest}: {ex.Message}");
                 }
             }
 

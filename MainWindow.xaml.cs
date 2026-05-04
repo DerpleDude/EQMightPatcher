@@ -5,15 +5,18 @@ using System.Net.Http;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace EQMightPatcher;
+
+public record LogEntry(string Text, System.Windows.Media.Brush Color);
 
 public partial class MainWindow : Window
 {
     private readonly PatcherSettings _settings;
     private readonly PatcherService _service = new();
-    private readonly ObservableCollection<string> _logEntries = [];
+    private readonly ObservableCollection<LogEntry> _logEntries = [];
     private CancellationTokenSource? _cts;
     private bool _patchComplete = false;
     private DispatcherTimer? _fightTimer;
@@ -109,9 +112,13 @@ public partial class MainWindow : Window
         UpdateButtonState();
     }
 
-    private void AppendLog(string message)
+    private static readonly System.Windows.Media.Brush DefaultLogBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xf0, 0xc8, 0x90));
+    private static readonly System.Windows.Media.Brush GreenLogBrush   = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0x6d, 0xd4, 0x6d));
+    private static readonly System.Windows.Media.Brush RedLogBrush     = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0xe0, 0x55, 0x55));
+
+    private void AppendLog(string message, System.Windows.Media.Brush? color = null)
     {
-        _logEntries.Add(message);
+        _logEntries.Add(new LogEntry(message, color ?? DefaultLogBrush));
         LogScroller.ScrollToBottom();
     }
 
@@ -140,7 +147,15 @@ public partial class MainWindow : Window
             StatusText.Text = report.Status;
         });
 
-        var log = new Progress<string>(AppendLog);
+        var log = new Progress<string>(msg =>
+        {
+            if (msg.TrimStart().StartsWith("OK", StringComparison.Ordinal))
+                AppendLog(msg, GreenLogBrush);
+            else if (msg.TrimStart().StartsWith("ERROR", StringComparison.Ordinal))
+                AppendLog(msg, RedLogBrush);
+            else
+                AppendLog(msg);
+        });
 
         try
         {
